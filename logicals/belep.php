@@ -1,25 +1,18 @@
 <?php
-if(isset($_POST['felhasznalo']) && isset($_POST['jelszo'])) {
-    try {
+try {
         // Kapcsolódás
-        $dbh = new PDO('mysql:host=localhost;dbname=coffeeshopusers', 'root', '',
+        $dbh = new PDO('mysql:host=api.uniassist.hu;dbname=CoffeeShop', 'CoffeeShop', '92-rhGz^D26%',
                         array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
-        $dbh->query('SET NAMES utf8 COLLATE utf8_hungarian_ci');
-        
         // Felhsználó keresése
-        $sqlSelect = "select id, csaladi_nev, uto_nev from felhasznalok where bejelentkezes = :bejelentkezes and jelszo = sha1(:jelszo)";
+        $sqlSelect = "select id, csaladinev, utonev from felhasznalok where bejelentkezes = :bejelentkezes and jelszo = :jelszo";
         $sth = $dbh->prepare($sqlSelect);
-        $sth->execute(array(':bejelentkezes' => $_POST['felhasznalo'], ':jelszo' => $_POST['jelszo']));
+        $sth->execute(array(':bejelentkezes' => $_POST['bejelentkezes'], ':jelszo' => $_POST['jelszo']));
         $row = $sth->fetch(PDO::FETCH_ASSOC);
         if($row) {
-            $_SESSION['csn'] = $row['csaladi_nev']; $_SESSION['un'] = $row['uto_nev']; $_SESSION['login'] = $_POST['felhasznalo'];
+            $_SESSION['csn'] = $row['csaladinev']; $_SESSION['un'] = $row['utonev']; $_SESSION['login'] = $_POST['bejelentkezes'];
         }
     }
     catch (PDOException $e) {
         $errormessage = "Hiba: ".$e->getMessage();
-    }      
-}
-else {
-    header("Location: .");
-}
+    }
 ?>

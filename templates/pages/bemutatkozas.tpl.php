@@ -53,23 +53,6 @@
             </div>
         </div>
     </section>
-    <section class="page-section">
-        <div class="container">
-            <div class="product-item">
-                <div class="d-flex product-item-title">
-                    <div class="d-flex mx-auto bg-faded p-5 rounded">
-                        <h2 class="section-heading mb-0"><span class="section-heading-upper">Töltsd fel</span><span class="section-heading-lower">a saját képedet a kávézónkról</span></h2>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <form action="upload" method="post" enctype="multipart/form-data">
-                        <input type="file" name="fileToUpload" id="fileToUpload">Kép feltöltése</input>
-                        <input type="submit" value="Feltöltés" name="submit">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
     <footer class="text-center footer text-faded py-5">
         <div class="container">
             <p class="m-0 small">Copyright&nbsp;©&nbsp;WebBeadando 2024</p>

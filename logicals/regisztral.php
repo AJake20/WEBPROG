@@ -1,32 +1,27 @@
 <?php
-if(isset($_POST['felhasznalo']) && isset($_POST['jelszo']) && isset($_POST['vezeteknev']) && isset($_POST['utonev'])) {
+if(isset($_POST['csaladinev']) && isset($_POST['utonev']) && isset($_POST['bejelentkezes']) && isset($_POST['jelszo'])) {
     try {
         // Kapcsolódás
-        $dbh = new PDO('mysql:host=localhost;dbname=coffeeshopusers', 'root', '',
+        $dbh = new PDO('mysql:host=api.uniassist.hu;dbname=CoffeeShop', 'CoffeeShop', '92-rhGz^D26%',
                         array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
-        $dbh->query('SET NAMES utf8 COLLATE utf8_hungarian_ci');
-        
         // Létezik már a felhasználói név?
         $sqlSelect = "select id from felhasznalok where bejelentkezes = :bejelentkezes";
         $sth = $dbh->prepare($sqlSelect);
-        $sth->execute(array(':bejelentkezes' => $_POST['felhasznalo']));
+        $sth->execute(array(':bejelentkezes' => $_POST['bejelentkezes']));
         if($row = $sth->fetch(PDO::FETCH_ASSOC)) {
             $uzenet = "A felhasználói név már foglalt!";
-            $ujra = "true";
+            $ujra = true;
         }
         else {
-            // Ha nem létezik, akkor regisztráljuk
-            $sqlInsert = "insert into felhasznalok(id, csaladi_nev, uto_nev, bejelentkezes, jelszo)
-                          values(0, :csaladinev, :utonev, :bejelentkezes, :jelszo)";
-            $stmt = $dbh->prepare($sqlInsert); 
-            $stmt->execute(array(':csaladinev' => $_POST['vezeteknev'], ':utonev' => $_POST['utonev'],
-                                 ':bejelentkezes' => $_POST['felhasznalo'], ':jelszo' => sha1($_POST['jelszo']))); 
+            // Define your SQL query before using it
+            $sqlInsert = "INSERT INTO felhasznalok (csaladinev, utonev, bejelentkezes, jelszo) VALUES (:csaladinev, :utonev, :bejelentkezes, :jelszo)";
+            $stmt = $dbh->prepare($sqlInsert);
+            $stmt->execute(array(':csaladinev' =>  $_POST['csaladinev'], ':utonev' => $_POST['utonev'], ':bejelentkezes' => $_POST['bejelentkezes'], ':jelszo' => $_POST['jelszo']));
             if($count = $stmt->rowCount()) {
                 $newid = $dbh->lastInsertId();
                 $uzenet = "A regisztrációja sikeres.<br>Azonosítója: {$newid}";                     
                 $ujra = false;
-            }
-            else {
+            } else {
                 $uzenet = "A regisztráció nem sikerült.";
                 $ujra = true;
             }
@@ -35,9 +30,18 @@ if(isset($_POST['felhasznalo']) && isset($_POST['jelszo']) && isset($_POST['veze
     catch (PDOException $e) {
         $uzenet = "Hiba: ".$e->getMessage();
         $ujra = true;
-    }      
+    }
 }
 else {
-    header("Location: .");
+        // One or more required POST parameters are not set, handle the error
+        $uzenet = "A regisztráció nem sikerült. Kérjük, adja meg az összes szükséges adatot.";
+        $ujra = true;
+        echo "csaladinev: " . $_POST['csaladinev'] . "<br>";
+        echo "utonev: " . $_POST['utonev'] . "<br>";
+        echo "bejelentkezes: " . $_POST['bejelentkezes'] . "<br>";
+        echo "jelszo: " . $_POST['jelszo'] . "<br>";
 }
+
+// Display the message to the user
+echo $uzenet;
 ?>
