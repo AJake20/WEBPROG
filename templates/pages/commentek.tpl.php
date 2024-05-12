@@ -23,3 +23,21 @@
         </div>
     </div>
 </section>
+<script>
+    document.getElementById('commentForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+
+        var form = event.target;
+        var formData = new FormData(form);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open(form.method, form.action, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                // Handle the response here
+                console.log(xhr.responseText);
+            }
+        };
+        xhr.send(formData);
+    });
+</script>
