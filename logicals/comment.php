@@ -1,28 +1,28 @@
 <?php
-if(isset($_POST['fullname']) && isset($_POST['email']) && isset($_POST['comment'])) {
-    try {
-        // Kapcsolódás
-        $dbh = new PDO('mysql:host=api.uniassist.hu;dbname=CoffeeShop', 'CoffeeShop', '92-rhGz^D26%',
+try {
+    $dbh = new PDO('mysql:host=api.uniassist.hu;dbname=CoffeeShop', 'CoffeeShop', '92-rhGz^D26%',
                         array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
-        // Define your SQL query before using it
-        $sqlInsert = "INSERT INTO commentek (fullname, email, comment) VALUES (:fullname, :email, :comment)";
-        $stmt = $dbh->prepare($sqlInsert);
-        $stmt->execute(array(':fullname' =>  $_POST['fullname'], ':email' => $_POST['email'], ':comment' => $_POST['comment']));
-        if($count = $stmt->rowCount()) {
-            $newid = $dbh->lastInsertId();
-            $uzenet = "A megjegyzést sikeres elküldte.<br>Azonosítója: {$newid}";                     
-            $ujra = false;
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $fullname = $_POST['fullname'];
+        $email = $_POST['email'];
+        $comment = $_POST['comment'];
+
+        $stmt = $dbh->prepare("INSERT INTO comments (fullname, email, comment) VALUES (:fullname, :email, :comment)");
+        $stmt->bindParam(':fullname', $fullname);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':comment', $comment);
+
+        if ($stmt->execute()) {
+            echo "Megjegyzés sikeresen elküldve!";
         } else {
-            $uzenet = "A megjegyzést nem sikerült elküldeni.";
-            $ujra = true;
+            echo "Hiba: a megjegyzés elküldése sikertelen!";
         }
     }
-    catch (PDOException $e) {
-        $uzenet = "Hiba: ".$e->getMessage();
-        $ujra = true;
-    }
+} 
+catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
 }
-else {
-    $ujra = true;
-}
+
+$dbh = null;
 ?>

@@ -4,10 +4,9 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Teljes Név</th>
-                    <th>Email</th>
+                    <th>Név</th>
                     <th>Megjegyzés</th>
+                    <th>Dátum</th>
                 </tr>
             </thead>
             <tbody>
@@ -15,17 +14,16 @@
                 $dbh = new PDO('mysql:host=api.uniassist.hu;dbname=CoffeeShop', 'CoffeeShop', '92-rhGz^D26%',
                 array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
                 // Define your SQL query before using it
-                $sql = "SELECT * FROM commentek ORDER BY ids DESC";
+                $sql = "SELECT * FROM comments ORDER BY id DESC";
                 
                 $result = $dbh->query($sql);
                 
                 if ($result->rowCount() > 0) {
                     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                         echo "<tr>";
-                        echo "<td>" . $row["ids"] . "</td>";
                         echo "<td>" . $row["fullname"] . "</td>";
-                        echo "<td>" . $row["email"] . "</td>";
                         echo "<td>" . $row["comment"] . "</td>";
+                        echo "<td>" . $row["created_at"] . "</td>";
                         echo "</tr>";
                     }
                 } else {
